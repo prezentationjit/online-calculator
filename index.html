@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Calculator90</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --light-bg: #f0f2f5;
+            --card-bg: #fff;
+            --text-dark: #333;
+            --text-light: #6c757d;
+            --button-bg: #e9ecef;
+            --button-hover: #dee2e6;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            line-height: 1.6;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: #1a73e8;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Navigation Styles */
+        nav {
+            background: var(--primary-color);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 0;
+        }
+
+        .nav-brand h1 {
+            color: white;
+            font-size: 1.4rem;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 0.8rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: block;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-hover);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Calculator Styles */
+        .hero {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .calculator-brand {
+            margin-bottom: 1.5rem;
+        }
+
+        .calculator {
+            max-width: 400px;
+            margin: 1rem auto 2rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        #display {
+            width: 100%;
+            height: 70px;
+            border: none;
+            background: #f8f9fa;
+            font-size: 2rem;
+            text-align: right;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+        }
+
+        .btn {
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: none;
+            background: var(--button-bg);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .btn:hover {
+            background: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .operator {
+            background: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .operator:hover {
+            background: var(--primary-hover);
+        }
+
+        .equals {
+            grid-column: span 2;
+            background: #28a745;
+        }
+
+        .equals:hover {
+            background: #218838;
+        }
+
+        /* Content Sections */
+        section {
+            display: none;
+            padding: 2rem 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .active-section {
+            display: block;
+        }
+
+        .content-article {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight {
+            background: #e8f0fe;
+            padding: 1rem;
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .guide-step {
+            margin-bottom: 1.5rem;
+        }
+
+        kbd {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 0.1rem 0.4rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Ad Container */
+        .ad-container {
+            margin: 2rem 0;
+            text-align: center;
+            min-height: 100px;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .footer-brand, .footer-links, .footer-contact {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .calculator {
+                margin: 1rem auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                position: fixed;
+                flex-direction: column;
+                background: var(--primary-color);
+                width: 100%;
+                top: 60px;
+                left: 0;
+                padding: 1rem;
+                gap: 0;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                z-index: 99;
+            }
+
+            .nav-menu.open {
+                transform: translateY(0);
+            }
+
+            .nav-link {
+                padding: 1rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .calculator {
+                width: 100%;
+            }
+
+            .buttons {
+                gap: 0.4rem;
+            }
+            
+            .btn {
+                padding: 0.8rem;
+                font-size: 1.1rem;
+            }
+
+            #display {
+                height: 60px;
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .content-article {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.7rem 0;
+                font-size: 1rem;
+            }
+
+            #display {
+                height: 50px;
+                font-size: 1.6rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <h1>OnlineCalculator90</h1>
+            </div>
+            <button class="hamburger" id="menu-toggle">☰</button>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#" class="nav-link active" data-target="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-target="about">About</a></li>
+                <li><a href="#" class="nav-link" data-target="article">Guide</a></li>
+                <li><a href="#" class="nav-link" data-target="contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Ad Placement 1: Top Banner -->
+    <div class="ad-container container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <section id="home" class="active-section">
+        <div class="container">
+            <div class="hero">
+                <div class="calculator-brand">
+                    <h1>Online Calculator90</h1>
+                    <p>Smart Calculations Made Simple</p>
+                </div>
+            </div>
+
+            <div class="calculator">
+                <input type="text" id="display" readonly>
+                <div class="buttons">
+                    <button class="btn operator" onclick="clearDisplay()">C</button>
+                    <button class="btn operator" onclick="appendToDisplay('(')">(</button>
+                    <button class="btn operator" onclick="appendToDisplay(')')">)</button>
+                    <button class="btn operator" onclick="appendToDisplay('/')">/</button>
+                    
+                    <button class="btn" onclick="appendToDisplay('7')">7</button>
+                    <button class="btn" onclick="appendToDisplay('8')">8</button>
+                    <button class="btn" onclick="appendToDisplay('9')">9</button>
+                    <button class="btn operator" onclick="appendToDisplay('*')">×</button>
+                    
+                    <button class="btn" onclick="appendToDisplay('4')">4</button>
+                    <button class="btn" onclick="appendToDisplay('5')">5</button>
+                    <button class="btn" onclick="appendToDisplay('6')">6</button>
+                    <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+                    
+                    <button class="btn" onclick="appendToDisplay('1')">1</button>
+                    <button class="btn" onclick="appendToDisplay('2')">2</button>
+                    <button class="btn" onclick="appendToDisplay('3')">3</button>
+                    <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+                    
+                    <button class="btn" onclick="appendToDisplay('0')">0</button>
+                    <button class="btn" onclick="appendToDisplay('.')">.</button>
+                    <button class="btn operator equals" onclick="calculate()">=</button>
+                </div>
+            </div>
+
+            <!-- Ad Placement 2: Below Calculator -->
+            <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block; text-align:center;"
+                     data-ad-layout="in-article"
+                     data-ad-format="fluid"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="0987654321"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <article class="content-article">
+                <h2>About OnlineCalculator90</h2>
+                <p>Founded in 2025 by Rizwan, a dedicated Computer Science student pursuing his BSCS at Qurtuba University (Phase 3, Hayatabad, Peshawar), OnlineCalculator90 was born from a passion for merging technology with educational accessibility.</p>
+
+                <h3>Our Story</h3>
+                <p>While struggling with complex calculations during university projects, Rizwan recognized the need for a simple, accessible calculation tool. What began as a classroom project evolved into a full-fledged platform used by thousands daily.</p>
+
+                <h3>Powered by PresentationJit</h3>
+                <p>We're proud to be technology partners with <strong>PresentationJit</strong>, leveraging their innovative solutions to deliver:</p>
+                <ul>
+                    <li>Lightning-fast calculations</li>
+                    <li>Intuitive user interfaces</li>
+                    <li>Reliable performance across devices</li>
+                </ul>
+
+                <h3>Our Mission</h3>
+                <p>To democratize mathematical tools through:</p>
+                <ul>
+                    <li>Student-focused design</li>
+                    <li>Localized solutions for Pakistani learners</li>
+                    <li>Free access to premium features</li>
+                </ul>
+
+                <div class="highlight">
+                    <p>From the tech classrooms of Qurtuba University to your browser - making math magical! ✨</p>
+                </div>
+            </article>
+            
+            <!-- Ad Placement 3: In-Content -->
+            <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-format="autorelaxed"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="1357924680"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <section id="article">
+        <div class="container">
+            <article class="content-article">
+                <h2>Mastering OnlineCalculator90: Your Complete Guide</h2>
+                <p>Unlock the full potential of your smart calculator with these expert tips and step-by-step instructions.</p>
+
+                <h3>Getting Started</h3>
+                <div class="guide-step">
+                    <h4>Basic Calculations</h4>
+                    <p>Perform simple arithmetic in 3 easy steps:</p>
+                    <ol>
+                        <li>Click numbers (0-9) to input values</li>
+                        <li>Select an operation (+, -, ×, ÷)</li>
+                        <li>Press = to see results</li>
+                    </ol>
+                    <p>Example: Calculate 15 × 4<br>
+                    <kbd>1</kbd> <kbd>5</kbd> <kbd>×</kbd> <kbd>4</kbd> <kbd>=</kbd> → <strong>60</strong></p>
+                </div>
+
+                <h3>Advanced Features</h3>
+                <div class="guide-step">
+                    <h4>Using Parentheses</h4>
+                    <p>Control calculation order with ( ) buttons:</p>
+                    <ul>
+                        <li>Always start with opening parenthesis <kbd>(</kbd></li>
+                        <li>Close with <kbd>)</kbd> when ready</li>
+                    </ul>
+                    <p>Example: (2+3) × 4<br>
+                    <kbd>(</kbd> <kbd>2</kbd> <kbd>+</kbd> <kbd>3</kbd> <kbd>)</kbd> <kbd>×</kbd> <kbd>4</kbd> <kbd>=</kbd> → <strong>20</strong></p>
+                </div>
+
+                <div class="guide-step">
+                    <h4>Decimal Calculations</h4>
+                    <p>Use the <kbd>.</kbd> button for precise values:</p>
+                    <ul>
+                        <li>Place decimals between numbers</li>
+                        <li>Combine with all operations</li>
+                    </ul>
+                    <p>Example: 10.5 ÷ 2.1<br>
+                    <kbd>1</kbd> <kbd>0</kbd> <kbd>.</kbd> <kbd>5</kbd> <kbd>÷</kbd> <kbd>2</kbd> <kbd>.</kbd> <kbd>1</kbd> <kbd>=</kbd> → <strong>5</strong></p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <article class="content-article">
+                <h2>Contact Us</h2>
+                <p>Have questions or feedback? We'd love to hear from you!</p>
+                
+                <div id="contact-info">
+                    <h3>Get in Touch</h3>
+                    <p>Our team is available to assist you with any questions:</p>
+                    <ul>
+                        <li>📧 Email: <a href="mailto:tempmail22@gmail.com">tempmail22@gmail.com</a></li>
+                    </ul>
+                </div>
+                
+                <div id="contact-form" class="mt-4">
+                    <h3>Send a Message</h3>
+                    <form id="feedback-form" onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your name" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Your email" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" placeholder="Your message" rows="5" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                        </div>
+                        <button type="submit" style="background: #1a73e8; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Send Message</button>
+                    </form>
+                    <div id="form-message" style="margin-top: 15px;"></div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section id="privacy">
+        <div class="container">
+            <article class="content-article">
+                <h2>Privacy Policy</h2>
+                <p>We respect your privacy. We don't store personal data or calculation history.</p>
+                <h3>Data Collection</h3>
+                <p>Only anonymous usage statistics are collected to improve our service.</p>
+            </article>
+        </div>
+    </section>
+
+    <section id="terms">
+        <div class="container">
+            <article class="content-article">
+                <h2>Terms of Service</h2>
+                <p>By using OnlineCalculator90, you agree to:</p>
+                <ul>
+                    <li>Use the tool responsibly</li>
+                    <li>Not attempt reverse engineering</li>
+                    <li>Accept occasional downtime</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <section id="disclaimer">
+        <div class="container">
+            <article class="content-article">
+                <h2>Disclaimer</h2>
+                <p>OnlineCalculator90 provides results "as is" - always verify critical calculations.</p>
+            </article>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3 class="footer-title">OnlineCalculator90</h3>
+                    <p>Smart Calculations Made Simple</p>
+                    <p>Powered by PresentationJit</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-target="home">Home</a></li>
+                        <li><a href="#" data-target="about">About</a></li>
+                        <li><a href="#" data-target="article">Guide</a></li>
+                        <li><a href="#" data-target="contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3 class="footer-title">Legal</h3>
+                    <ul>
+                        <li><a href="#" data-target="privacy">Privacy Policy</a></li>
+                        <li><a href="#" data-target="terms">Terms of Service</a></li>
+                        <li><a href="#" data-target="disclaimer">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2025 OnlineCalculator90. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Calculator Logic
+        let display = document.getElementById('display');
+
+        function appendToDisplay(value) {
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        function calculate() {
+            try {
+                display.value = eval(display.value);
+            } catch (error) {
+                display.value = 'Error';
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+
+        // Navigation Logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Set active class
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Show section
+                showSection(link.dataset.target);
+                
+                // Close mobile menu
+                navMenu.classList.remove('open');
+            });
+        });
+
+        // Footer links
+        document.querySelectorAll('footer a[data-target]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Set active nav link
+                const targetSection = link.dataset.target;
+                navLinks.forEach(l => {
+                    if (l.dataset.target === targetSection) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+                
+                // Show section
+                showSection(targetSection);
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+        });
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('open');
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            document.getElementById(sectionId).classList.add('active-section');
+        }
+
+        // Form Handling
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const messageDiv = document.getElementById('form-message');
+            
+            messageDiv.textContent = "Sending message...";
+            messageDiv.style.color = "#1a73e8";
+            
+            setTimeout(() => {
+                form.reset();
+                messageDiv.textContent = "Message sent successfully!";
+                messageDiv.style.color = "#28a745";
+                setTimeout(() => messageDiv.textContent = "", 3000);
+            }, 1000);
+        }
+
+        // Initial Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial section
+            showSection('home');
+            
+            // AdSense
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            
+            // Add keypress handler for calculator
+            document.addEventListener('keydown', (e) => {
+                const key = e.key;
+                if (key >= '0' && key <= '9' || key === '+' || key === '-' || key === '*' || key === '/' || key === '.' || key === '(' || key === ')') {
+                    appendToDisplay(key);
+                } else if (key === 'Enter') {
+                    calculate();
+                } else if (key === 'Escape') {
+                    clearDisplay();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
